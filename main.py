@@ -1,5 +1,5 @@
 """
-Snack Market Simulation — entry point.
+Agentic Category Management — entry point.
 
 Uso:
     python main.py                    # episodio 1
@@ -16,7 +16,7 @@ console = Console()
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Snack Market Multi-Agent Simulation")
+    parser = argparse.ArgumentParser(description="Agentic Category Management")
     parser.add_argument("--episode", type=int, default=None, help="Episodio specifico da girare")
     parser.add_argument("--episodes", type=int, default=1, help="Numero di episodi consecutivi")
     parser.add_argument("--model", type=str, default="qwen3:8b", help="Modello Ollama da usare")
