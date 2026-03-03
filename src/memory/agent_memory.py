@@ -5,8 +5,8 @@ Questo è il modulo che implementa il Principio 4 (Compound Intelligence):
 ogni episodio deposita conoscenza strutturata nel grafo condiviso.
 """
 
-from agentic_category_management.world.market_simulator import MarketSimulator, WeeklyResult, SEASONALITY, SKUS
-from agentic_category_management.memory.system_memory import MarketMemoryGraph, NodeType
+from src.world.market_simulator import MarketSimulator, WeeklyResult, SEASONALITY, SKUS
+from src.memory.system_memory import MarketMemoryGraph, NodeType
 import numpy as np
 
 

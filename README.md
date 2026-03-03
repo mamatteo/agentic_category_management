@@ -121,7 +121,7 @@ A fine episodio il sistema stampa nel terminale i reward per agente (scala ~0–
 ## Struttura del progetto
 
 ```
-agentic_category_management/
+src/
 ├── main.py
 ├── agents/
 │   ├── agent.py         # Classe base: chiamata LLM + parsing JSON + history privata

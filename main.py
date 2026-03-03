@@ -23,7 +23,7 @@ def main():
     parser.add_argument("--start-from", type=int, default=1, help="Episodio di partenza")
     args = parser.parse_args()
 
-    from agentic_category_management.orchestrator.graph import run_episode
+    from src.orchestrator.graph import run_episode
 
     if args.episode is not None:
         # Esegui un episodio specifico
