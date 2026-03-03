@@ -1,8 +1,12 @@
 # Agentic Category Management
 
-La gestione delle categorie in GDO è un problema di negoziazione multi-stakeholder: i manufacturer vogliono spazio a scaffale e promozioni redditizie, il retailer vuole margine per metro lineare, i consumatori spingono la domanda attraverso trend che cambiano nel tempo. Le decisioni sono sequenziali, gli incentivi sono disallineati, e la conoscenza si accumula episodio dopo episodio.
+Le promozioni trade rappresentano in media il 15–25% del fatturato dei manufacturer di largo consumo e costituiscono la principale voce di costo dopo il costo del venduto. Eppure la loro pianificazione avviene ancora in buona parte attraverso negoziazioni bilaterali, fogli Excel e regole empiriche consolidate nel tempo.
 
-Questo sistema modella esattamente quella dinamica. Cinque agenti LLM — tre manufacturer, un retailer, un consumer — negoziano assortimento, promozioni e spazio scaffale su un mercato snack italiano simulato. Non seguono script. Ognuno conosce i propri obiettivi e decide autonomamente come perseguirli, settimana dopo settimana.
+Il problema è strutturalmente complesso. Manufacturer e retailer siedono al tavolo con obiettivi parzialmente allineati — entrambi vogliono che la categoria cresca — ma con incentivi contrapposti sulla distribuzione del margine. Il category manager del retailer deve bilanciare margine per metro lineare, rotazione dell'inventario, soddisfazione del consumatore e qualità della relazione con ciascun fornitore. Il trade promotion manager del manufacturer deve decidere quale SKU promuovere, con quale sconto, per quante settimane e con quale display fee — sapendo che ogni promozione genera un lift immediato ma anche un post-promo dip, e che i competitor osservano le sue mosse e reagiscono.
+
+A complicare il quadro: l'informazione è asimmetrica (il manufacturer conosce i propri costi, il retailer conosce i dati di basket), le decisioni sono sequenziali e interdipendenti, e la conoscenza rilevante si accumula lentamente nel tempo — alcune dinamiche (la stagionalità) sono stabili, altre (le tattiche dei competitor) cambiano continuamente.
+
+Questo sistema modella esattamente quella dinamica. Cinque agenti LLM — tre manufacturer, un retailer, un consumer — negoziano assortimento, promozioni e spazio scaffale su un mercato snack italiano simulato. Non seguono script. Ognuno conosce i propri obiettivi e decide autonomamente come perseguirli, settimana dopo settimana, episodio dopo episodio.
 
 ---
 
@@ -142,8 +146,8 @@ src/
 **Requisiti:** Python 3.11+, [Ollama](https://ollama.ai) installato e in esecuzione.
 
 ```bash
-git clone https://github.com/mamatteo/snack-market-sim.git
-cd snack-market-sim
+git clone https://github.com/mamatteo/agentic_category_management.git
+cd agentic_category_management
 pip install -r requirements.txt
 ollama pull qwen3:8b
 ```
@@ -194,14 +198,19 @@ Ogni settimana richiede 5 chiamate LLM. Con modelli locali su hardware consumer,
 
 ---
 
-## Roadmap
+## Possibili nuovi sviluppi
 
-- [ ] Strategy journal persistente — insight degli episodi sintetizzati dall'LLM e consultabili dagli agenti
-- [ ] Protocollo di negoziazione multi-round — counter-offer, joint business plan, termini contrattuali
-- [ ] Topologia multi-retailer — competizione tra catene GDO
-- [ ] Meccaniche di supply chain — lead time, stockout, penali
-- [ ] Shock macroeconomici — inflazione, disruption dell'offerta, variazioni di costo
-- [ ] Loop RL con experience replay e valutazione statistica delle policy
+**Strategy journal per agente.** Attualmente ogni agente mantiene uno storico delle proprie decisioni settimanali, ma non sintetizza insight di lungo periodo. Un journal persistente — alimentato dall'LLM a fine episodio — permetterebbe a ciascun agente di ragionare su pattern multi-episodio: *"nelle ultime 5 stagioni estive, le promozioni su ChipsPremium hanno generato ROI superiore alla media"*. Trasformerebbe la memoria da log a vera intelligenza strategica.
+
+**Negoziazione multi-round.** Il protocollo attuale prevede un singolo ciclo proposta–risposta per settimana. La negoziazione reale in GDO è molto più articolata: joint business plan annuali, accordi quadro su più SKU, rinegoziazione delle condizioni al raggiungimento di target di volume. Estendere il protocollo a più round esporrebbe dinamiche di potere negoziale che il modello attuale non cattura.
+
+**Topologia multi-retailer.** Con un solo retailer, i manufacturer non affrontano il problema reale dell'allocazione del budget promozionale tra catene diverse. Aggiungere più retailer in competizione — con profili di consumatori e politiche di categoria distinti — introdurrebbe scelte di portafoglio realistiche e tensioni tra canali.
+
+**Meccaniche di supply chain.** Le promozioni generano picchi di domanda che devono essere anticipati nella pianificazione produttiva e logistica. Lead time, rischio di stockout e costi di safety stock sono vincoli concreti che oggi il simulatore ignora. Integrarli renderebbe le decisioni promozionali dei manufacturer strutturalmente più fedeli alla realtà operativa.
+
+**Shock macroeconomici.** L'inflazione erode il valore reale degli sconti e altera la sensibilità al prezzo dei consumatori. Le disruption dell'offerta cambiano i rapporti di forza tra manufacturer e retailer. Introdurre questi shock permetterebbe di testare la robustezza della conoscenza accumulata dal sistema in presenza di distribution shift — un banco di prova per la qualità del grafo di memoria.
+
+**Loop RL con valutazione statistica delle policy.** Il sistema attuale usa ragionamento LLM senza ottimizzazione formale delle policy. Un loop di reinforcement learning con experience replay consentirebbe di separare la conoscenza strutturale appresa dal comportamento degli agenti, valutare statisticamente l'efficacia delle strategie promozionali, e confrontare policy alternative in modo rigoroso.
 
 ---
 
