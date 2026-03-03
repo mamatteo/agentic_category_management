@@ -109,8 +109,8 @@ La stagionalità riflette i picchi reali della GDO italiana: +25% estate (settim
 
 | File | Contenuto |
 |---|---|
-| `episode_log.json` | Reward per agente e nuova conoscenza strutturale per ogni episodio |
-| `market_memory.json` | Grafo di memoria persistente — nodi, archi, confidenza, layer |
+| `results.json` | Reward per agente e nuova conoscenza strutturale per ogni episodio |
+| `output_data/knowledge_graph.json` | Grafo di memoria persistente — nodi, archi, confidenza, layer |
 
 A fine episodio il sistema stampa nel terminale i reward per agente (scala ~0–2, blend 60% individuale + 40% sistemico), la conoscenza strutturale accumulata, e le promozioni Layer 2 → Layer 1 avvenute in quell'episodio.
 

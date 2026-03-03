@@ -33,8 +33,10 @@ from src.memory.agent_memory import MemoryExtractor
 
 console = Console()
 
-MEMORY_PATH = "market_memory.json"
-EPISODE_LOG_PATH = "episode_log.json"
+MEMORY_PATH = "output_data/knowledge_graph.json"
+EPISODE_LOG_PATH = "results.json"
+
+os.makedirs("output_data", exist_ok=True)
 
 
 # ============================================================================
