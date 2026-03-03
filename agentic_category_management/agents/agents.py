@@ -7,7 +7,7 @@ Principio 2 applicato: contesto ricco ma non prescrittivo.
 
 import json
 from agentic_category_management.agents.agent import BaseAgent
-from agentic_category_management.world.engine import PromotionProposal
+from agentic_category_management.world.market_simulator import PromotionProposal
 
 
 # ============================================================================

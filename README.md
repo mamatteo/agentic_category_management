@@ -132,7 +132,7 @@ agentic_category_management/
 ├── orchestrator/
 │   └── graph.py         # Orchestratore LangGraph — ciclo settimanale
 └── world/
-    └── engine.py        # Simulatore: domanda, financials, reward
+    └── market_simulator.py  # Simulatore: domanda, financials, reward
 ```
 
 ---

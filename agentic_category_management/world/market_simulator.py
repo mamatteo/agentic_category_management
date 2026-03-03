@@ -107,7 +107,7 @@ POST_PROMO_DIP_WEEKS = 3
 COMPETITOR_REACTION_PROB = 0.20  # probabilità che un competitor promuova nella stessa categoria
 
 
-class WorldEngine:
+class MarketSimulator:
 
     def __init__(self, seed: int = 42):
         self.rng = np.random.default_rng(seed)

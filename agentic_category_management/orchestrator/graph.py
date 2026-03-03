@@ -27,7 +27,7 @@ from agentic_category_management.agents.agents import (
     RetailerAgent,
     ConsumerAgent,
 )
-from agentic_category_management.world.engine import WorldEngine, PromotionProposal
+from agentic_category_management.world.market_simulator import MarketSimulator, PromotionProposal
 from agentic_category_management.memory.system_memory import MarketMemoryGraph
 from agentic_category_management.memory.agent_memory import MemoryExtractor
 
@@ -59,7 +59,7 @@ class SimState(TypedDict):
 # Nodi del grafo
 # ============================================================================
 
-def node_consumer(state: SimState, consumer: ConsumerAgent, world: WorldEngine, memory: MarketMemoryGraph) -> SimState:
+def node_consumer(state: SimState, consumer: ConsumerAgent, world: MarketSimulator, memory: MarketMemoryGraph) -> SimState:
     """Il consumer agent aggiorna i trend di mercato."""
     world_state = world.get_state_summary()
     memory_context = memory.get_context_for_agent("consumer")
@@ -85,7 +85,7 @@ def node_consumer(state: SimState, consumer: ConsumerAgent, world: WorldEngine, 
 
 
 def node_manufacturers(state: SimState, mfr_a: ManufacturerAgentA, mfr_b: ManufacturerAgentB,
-                       mfr_c: ManufacturerAgentC, world: WorldEngine, memory: MarketMemoryGraph) -> SimState:
+                       mfr_c: ManufacturerAgentC, world: MarketSimulator, memory: MarketMemoryGraph) -> SimState:
     """I tre manufacturer decidono se proporre promozioni."""
     world_state = state["world_state"]
     memory_context = memory.get_context_for_agent("manufacturers")
@@ -121,7 +121,7 @@ def node_manufacturers(state: SimState, mfr_a: ManufacturerAgentA, mfr_b: Manufa
     }
 
 
-def node_retailer(state: SimState, retailer: RetailerAgent, world: WorldEngine, memory: MarketMemoryGraph) -> SimState:
+def node_retailer(state: SimState, retailer: RetailerAgent, world: MarketSimulator, memory: MarketMemoryGraph) -> SimState:
     """Il retailer valuta le proposte e decide."""
     world_state = state["world_state"]
     memory_context = memory.get_context_for_agent("retailer")
@@ -187,7 +187,7 @@ def node_retailer(state: SimState, retailer: RetailerAgent, world: WorldEngine, 
     }
 
 
-def node_world_step(state: SimState, world: WorldEngine) -> SimState:
+def node_world_step(state: SimState, world: MarketSimulator) -> SimState:
     """Avanza il world engine di una settimana e calcola i risultati."""
     results = world.step()
 
@@ -228,10 +228,10 @@ def node_check_episode_end(state: SimState) -> SimState:
     return {**state, "done": done}
 
 
-def node_end_episode(state: SimState, world: WorldEngine, memory: MarketMemoryGraph,
+def node_end_episode(state: SimState, world: MarketSimulator, memory: MarketMemoryGraph,
                      extractor: MemoryExtractor, episode: int) -> SimState:
     """Fine episodio: distilla conoscenza, salva memoria, stampa report."""
-    from agentic_category_management.world.engine import WeeklyResult
+    from agentic_category_management.world.market_simulator import WeeklyResult
 
     episode_results_raw = state.get("episode_results", [])
     episode_results = [
@@ -322,7 +322,7 @@ def _save_episode_log(episode: int, rewards: dict, promotion_log: list):
 # Costruzione del grafo LangGraph
 # ============================================================================
 
-def build_graph(world: WorldEngine, memory: MarketMemoryGraph, episode: int, model: str = "qwen3:8b"):
+def build_graph(world: MarketSimulator, memory: MarketMemoryGraph, episode: int, model: str = "qwen3:8b"):
     mfr_a = ManufacturerAgentA(model)
     mfr_b = ManufacturerAgentB(model)
     mfr_c = ManufacturerAgentC(model)
@@ -376,7 +376,7 @@ def run_episode(episode: int, model: str = "qwen3:8b"):
         memory = MarketMemoryGraph()
         console.print("[yellow]Nuova memoria inizializzata[/yellow]")
 
-    world = WorldEngine(seed=episode * 42)
+    world = MarketSimulator(seed=episode * 42)
 
     graph = build_graph(world, memory, episode, model)
 
