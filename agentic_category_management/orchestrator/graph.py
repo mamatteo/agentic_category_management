@@ -28,8 +28,8 @@ from agentic_category_management.agents.agents import (
     ConsumerAgent,
 )
 from agentic_category_management.world.engine import WorldEngine, PromotionProposal
-from agentic_category_management.memory.shared_memory import MarketMemoryGraph
-from agentic_category_management.memory.extractor import MemoryExtractor
+from agentic_category_management.memory.system_memory import MarketMemoryGraph
+from agentic_category_management.memory.agent_memory import MemoryExtractor
 
 console = Console()
 

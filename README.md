@@ -76,7 +76,7 @@ Il caso d'uso GDO si colloca tra i due estremi. Manufacturer e retailer hanno in
 Questo sistema riflette quella distinzione con due livelli di memoria separati:
 
 - **Memoria individuale** (`agents/agent.py`): ogni agente mantiene uno storico privato delle proprie decisioni settimanali — azioni proposte, risposte ricevute, pattern osservati. Questo storico non è visibile agli altri agenti, modellando la conoscenza proprietaria di ciascun player.
-- **Memoria sistemica** (`memory/shared_memory.py`): il grafo di mercato è condiviso tra tutti gli agenti e contiene conoscenza osservabile pubblicamente — pattern di domanda, effetti promozionali, tendenze di categoria. Ogni agente legge e alimenta lo stesso grafo.
+- **Memoria sistemica** (`memory/system_memory.py`): il grafo di mercato è condiviso tra tutti gli agenti e contiene conoscenza osservabile pubblicamente — pattern di domanda, effetti promozionali, tendenze di categoria. Ogni agente legge e alimenta lo stesso grafo.
 
 La scelta di rendere il grafo condiviso è consapevolmente semplificativa: in un sistema orientato alla competizione pura, si avrebbe invece un grafo per agente, con osservazioni filtrate per prospettiva. Quella direzione è percorribile nell'architettura attuale e rappresenta un'estensione naturale per simulazioni più adversariali.
 
@@ -127,8 +127,8 @@ agentic_category_management/
 │   ├── agent.py         # Classe base: chiamata LLM + parsing JSON + history privata
 │   └── agents.py        # I 5 agenti
 ├── memory/
-│   ├── shared_memory.py # MarketMemoryGraph — grafo di conoscenza condiviso
-│   └── extractor.py     # Distilla conoscenza dagli episodi nel grafo
+│   ├── system_memory.py # MarketMemoryGraph — grafo di conoscenza condiviso
+│   └── agent_memory.py  # Distilla le decisioni dei singoli agenti in conoscenza sistemica
 ├── orchestrator/
 │   └── graph.py         # Orchestratore LangGraph — ciclo settimanale
 └── world/

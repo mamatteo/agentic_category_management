@@ -6,7 +6,7 @@ ogni episodio deposita conoscenza strutturata nel grafo condiviso.
 """
 
 from agentic_category_management.world.engine import WorldEngine, WeeklyResult, SEASONALITY, SKUS
-from agentic_category_management.memory.shared_memory import MarketMemoryGraph, NodeType
+from agentic_category_management.memory.system_memory import MarketMemoryGraph, NodeType
 import numpy as np
 
 
