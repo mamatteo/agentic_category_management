@@ -12,16 +12,20 @@ Questo sistema modella esattamente quella dinamica. Cinque agenti LLM — tre ma
 
 ## Principi di design
 
-La maggior parte dei sistemi multi-agente in letteratura e in produzione delegano all'LLM l'esecuzione di step predefiniti in sequenza fissa. Il ragionamento è apparente: gli agenti non negoziano, non apprendono, non adattano la strategia nel tempo.
+Il termine *agentico* viene usato in modo molto ampio. Spesso descrive sistemi in cui un LLM esegue una sequenza di step predefiniti, chiama API in ordine fisso, o segue un workflow che il programmatore ha già risolto — lasciando all'LLM solo il compito di riempire i campi. È un uso legittimo del termine in contesti di automazione, ma non cattura la dimensione più interessante dell'agentività: la capacità di un sistema di prendere decisioni non prescritte, adattare la strategia nel tempo, e generare comportamenti che il progettista non ha esplicitamente programmato.
 
-Questo sistema è costruito su quattro principi che cercano di colmare quel gap:
+Un test pratico: se rimuovessi l'LLM dal sistema e lo sostituissi con regole hardcodate, il comportamento cambierebbe in modo sostanziale? Se la risposta è no — se l'LLM sta solo formattando output o traducendo istruzioni in API call — allora il ragionamento non è davvero distribuito negli agenti.
+
+In questo sistema la risposta è sì. Nessun agente sa in anticipo cosa proporrà la settimana prossima: dipende da cosa è successo quella corrente, da cosa ha osservato negli episodi precedenti, da come si è comportato il retailer, da cosa suggerisce il grafo di memoria. Il comportamento emerge dalla composizione di incentivi, contesto e ragionamento — non da uno script.
+
+Quattro principi rendono questo possibile:
 
 | Principio | Come si applica |
 |---|---|
 | **Obiettivi, non istruzioni** | I system prompt definiscono chi è ogni agente e cosa vuole. Mai come ottenerlo. Il ragionamento appartiene agli agenti. |
 | **Contesto ricco, non prescrittivo** | Ogni settimana gli agenti ricevono lo stato del mercato e la memoria condivisa. Decidono loro. Nessuna regola hardcodata. |
 | **Memoria attiva e verificabile** | Un grafo di conoscenza persiste tra gli episodi e cambia il comportamento degli agenti in modo misurabile. |
-| **Compound Intelligence** | Il sistema impara come sistema, non come somma di agenti isolati. Ogni interazione deposita conoscenza che tutti gli agenti possono usare. |
+| **Intelligenza sistemica** | Il sistema impara come sistema, non come somma di agenti isolati. Ogni interazione deposita conoscenza che tutti gli agenti possono usare. |
 
 ---
 
