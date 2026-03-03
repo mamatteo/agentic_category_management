@@ -6,7 +6,7 @@ ogni episodio deposita conoscenza strutturata nel grafo condiviso.
 """
 
 from snack_market_sim.world.engine import WorldEngine, WeeklyResult, SEASONALITY, SKUS
-from snack_market_sim.memory.graph import MarketMemoryGraph, NodeType
+from snack_market_sim.memory.shared_memory import MarketMemoryGraph, NodeType
 import numpy as np
 
 

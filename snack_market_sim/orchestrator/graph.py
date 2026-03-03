@@ -28,7 +28,7 @@ from snack_market_sim.agents.agents import (
     ConsumerAgent,
 )
 from snack_market_sim.world.engine import WorldEngine, PromotionProposal
-from snack_market_sim.memory.graph import MarketMemoryGraph
+from snack_market_sim.memory.shared_memory import MarketMemoryGraph
 from snack_market_sim.memory.extractor import MemoryExtractor
 
 console = Console()
