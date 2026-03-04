@@ -2,21 +2,21 @@
 
 Le promozioni trade rappresentano in media il 15–25% del fatturato dei manufacturer di largo consumo e costituiscono la principale voce di costo dopo il costo del venduto. Eppure la loro pianificazione avviene ancora in buona parte attraverso negoziazioni bilaterali, fogli Excel e regole empiriche consolidate nel tempo.
 
-Il problema è strutturalmente complesso. Manufacturer e retailer siedono al tavolo con obiettivi parzialmente allineati — entrambi vogliono che la categoria cresca — ma con incentivi contrapposti sulla distribuzione del margine. Il category manager del retailer deve bilanciare margine per metro lineare, rotazione dell'inventario, soddisfazione del consumatore e qualità della relazione con ciascun fornitore. Il trade promotion manager del manufacturer deve decidere quale SKU promuovere, con quale sconto, per quante settimane e con quale display fee — sapendo che ogni promozione genera un lift immediato ma anche un post-promo dip, e che i competitor osservano le sue mosse e reagiscono.
+Il problema è strutturalmente complesso. Manufacturer e retailer siedono al tavolo con obiettivi parzialmente allineati, entrambi vogliono che la categoria cresca, ma con incentivi contrapposti sulla distribuzione del margine. Il category manager del retailer deve bilanciare margine per metro lineare, rotazione dell'inventario, soddisfazione del consumatore e qualità della relazione con ciascun fornitore. Il trade promotion manager del manufacturer deve decidere quale SKU promuovere, con quale sconto, per quante settimane e con quale display fee, sapendo che ogni promozione genera un lift immediato ma anche un post-promo dip, e che i competitor osservano le sue mosse e reagiscono.
 
-A complicare il quadro: l'informazione è asimmetrica (il manufacturer conosce i propri costi, il retailer conosce i dati di basket), le decisioni sono sequenziali e interdipendenti, e la conoscenza rilevante si accumula lentamente nel tempo — alcune dinamiche (la stagionalità) sono stabili, altre (le tattiche dei competitor) cambiano continuamente.
+A complicare il quadro: l'informazione è asimmetrica (il manufacturer conosce i propri costi, il retailer conosce i dati di basket), le decisioni sono sequenziali e interdipendenti, e la conoscenza rilevante si accumula lentamente nel tempo, alcune dinamiche (la stagionalità) sono stabili, altre (le tattiche dei competitor) cambiano continuamente.
 
-Questo sistema modella esattamente quella dinamica. Cinque agenti LLM — tre manufacturer, un retailer, un consumer — negoziano assortimento, promozioni e spazio scaffale su un mercato snack italiano simulato. Non seguono script. Ognuno conosce i propri obiettivi e decide autonomamente come perseguirli, settimana dopo settimana, episodio dopo episodio.
+Questo sistema modella esattamente quella dinamica. Cinque agenti LLM, tre manufacturer, un retailer, un consumer, negoziano assortimento, promozioni e spazio scaffale su un mercato snack italiano simulato. Non seguono script. Ognuno conosce i propri obiettivi e decide autonomamente come perseguirli, settimana dopo settimana, episodio dopo episodio.
 
 ---
 
 ## Principi di design
 
-Il termine *agentico* viene usato in modo molto ampio. Spesso descrive sistemi in cui un LLM esegue una sequenza di step predefiniti, chiama API in ordine fisso, o segue un workflow che il programmatore ha già risolto — lasciando all'LLM solo il compito di riempire i campi. È un uso legittimo del termine in contesti di automazione, ma non cattura la dimensione più interessante dell'agentività: la capacità di un sistema di prendere decisioni non prescritte, adattare la strategia nel tempo, e generare comportamenti che il progettista non ha esplicitamente programmato.
+Il termine *agentico* viene usato in modo molto ampio. Spesso descrive sistemi in cui un LLM esegue una sequenza di step predefiniti, chiama API in ordine fisso, o segue un workflow che il programmatore ha già risolto, lasciando all'LLM solo il compito di riempire i campi. È un uso legittimo del termine in contesti di automazione, ma non cattura la dimensione più interessante dell'agentività: la capacità di un sistema di prendere decisioni non prescritte, adattare la strategia nel tempo, e generare comportamenti che il progettista non ha esplicitamente programmato.
 
-Un test pratico: se rimuovessi l'LLM dal sistema e lo sostituissi con regole hardcodate, il comportamento cambierebbe in modo sostanziale? Se la risposta è no — se l'LLM sta solo formattando output o traducendo istruzioni in API call — allora il ragionamento non è davvero distribuito negli agenti.
+Un test pratico: se rimuovessi l'LLM dal sistema e lo sostituissi con regole hardcodate, il comportamento cambierebbe in modo sostanziale? Se la risposta è no, se l'LLM sta solo formattando output o traducendo istruzioni in API call, allora il ragionamento non è davvero distribuito negli agenti.
 
-In questo sistema la risposta è sì. Nessun agente sa in anticipo cosa proporrà la settimana prossima: dipende da cosa è successo quella corrente, da cosa ha osservato negli episodi precedenti, da come si è comportato il retailer, da cosa suggerisce il grafo di memoria. Il comportamento emerge dalla composizione di incentivi, contesto e ragionamento — non da uno script.
+In questo sistema la risposta è sì. Nessun agente sa in anticipo cosa proporrà la settimana prossima: dipende da cosa è successo quella corrente, da cosa ha osservato negli episodi precedenti, da come si è comportato il retailer, da cosa suggerisce il grafo di memoria. Il comportamento emerge dalla composizione di incentivi, contesto e ragionamento, non da uno script.
 
 Quattro principi rendono questo possibile:
 
@@ -38,7 +38,7 @@ Consumer → Manufacturers → Retailer → World Step → verifica fine episodi
     ↑_________________________________________________________________|
 ```
 
-Il **Consumer** aggiorna i trend di domanda (preferenza healthy, sensibilità al prezzo). I **Manufacturer** decidono se proporre promozioni al retailer — quale SKU, che sconto, che display fee. Il **Retailer** valuta le proposte: può accettare, rifiutare, o fare un counter-offer. Il **World Engine** calcola domanda, fatturato e margini, e avanza di una settimana.
+Il **Consumer** aggiorna i trend di domanda (preferenza healthy, sensibilità al prezzo). I **Manufacturer** decidono se proporre promozioni al retailer, quale SKU, che sconto, che display fee. Il **Retailer** valuta le proposte: può accettare, rifiutare, o fare un counter-offer. Il **World Engine** calcola domanda, fatturato e margini, e avanza di una settimana.
 
 A fine episodio, la conoscenza emersa viene distillata nel grafo di memoria, pronta per gli episodi successivi.
 
@@ -56,9 +56,9 @@ A fine episodio, la conoscenza emersa viene distillata nel grafo di memoria, pro
 
 ## Calibrazione del sistema
 
-Ogni mercato ha le proprie leggi. Questa sezione mappa le domande tipiche di una raccolta requisiti ai parametri del sistema — per trasformare la simulazione generica in un modello fedele a un contesto specifico.
+Ogni mercato ha le proprie leggi. Questa sezione mappa le domande tipiche di una raccolta requisiti ai parametri del sistema, per trasformare la simulazione generica in un modello fedele a un contesto specifico.
 
-Tutti i parametri numerici sono centralizzati in `config.py` (root del progetto) — l'unico file da editare per ricalibrate la simulazione. Due elementi fanno eccezione per ragioni strutturali e si configurano direttamente in `world/market_simulator.py`: il catalogo SKU (`SKUS`) e il profilo di stagionalità (`_build_seasonality()`).
+Tutti i parametri numerici sono centralizzati in `config.py` (root del progetto), l'unico file da editare per ricalibrate la simulazione. Due elementi fanno eccezione per ragioni strutturali e si configurano direttamente in `world/market_simulator.py`: il catalogo SKU (`SKUS`) e il profilo di stagionalità (`_build_seasonality()`).
 
 ### Struttura del mercato
 
@@ -122,7 +122,7 @@ DEMAND_NOISE_SIGMA        = 0.05  # volatilità settimanale (σ del rumore gauss
 
 ### Struttura finanziaria
 
-**Domande al cliente:** Qual è il margine lordo tipico del retailer su prodotti in promozione? Come funziona la display fee — è flat o percentuale?
+**Domande al cliente:** Qual è il margine lordo tipico del retailer su prodotti in promozione? Come funziona la display fee, è flat o percentuale?
 
 ```python
 # config.py
@@ -183,11 +183,11 @@ DEFAULT_MODEL           = "qwen3:8b" # modello LLM di default
 
 ## La memoria come protagonista
 
-Il componente più importante del sistema non è nessun singolo agente — è la struttura di memoria che gli agenti condividono e alimentano nel tempo. Ma "memoria" non è un concetto uniforme: esistono due tipi con orizzonti temporali, funzioni e logiche di accesso radicalmente diverse, e la scelta di progettarli in modo asimmetrico non è arbitraria.
+Il componente più importante del sistema non è nessun singolo agente, è la struttura di memoria che gli agenti condividono e alimentano nel tempo. Ma "memoria" non è un concetto uniforme: esistono due tipi con orizzonti temporali, funzioni e logiche di accesso radicalmente diverse, e la scelta di progettarli in modo asimmetrico non è arbitraria.
 
-**Memoria a breve termine — privata, per-episodio.** Ogni agente mantiene una sliding window delle proprie ultime 10 decisioni settimanali (`short_term_memory` in `agent_base_class.py`), azzerata a inizio di ogni nuovo episodio. È la memoria di lavoro: "la settimana scorsa ho proposto uno sconto del 20% su ChipsPremium e il retailer ha rifiutato — questa settimana cambio tattica". È privata perché in un mercato competitivo ogni agente custodisce le proprie mosse. Un manufacturer non condivide con i competitor quanto sta scontando, né il retailer espone la propria funzione di preferenza a chi ci negozia contro. La breve termine cattura le strategie, ed è giusto che resti opaca agli altri.
+**Memoria a breve termine, privata, per-episodio.** Ogni agente mantiene una sliding window delle proprie ultime 10 decisioni settimanali (`short_term_memory` in `agent_base_class.py`), azzerata a inizio di ogni nuovo episodio. È la memoria di lavoro: "la settimana scorsa ho proposto uno sconto del 20% su ChipsPremium e il retailer ha rifiutato, questa settimana cambio tattica". È privata perché in un mercato competitivo ogni agente custodisce le proprie mosse. Un manufacturer non condivide con i competitor quanto sta scontando, né il retailer espone la propria funzione di preferenza a chi ci negozia contro. La breve termine cattura le strategie, ed è giusto che resti opaca agli altri.
 
-**Memoria a lungo termine — condivisa, cross-episodio.** Il `MarketMemoryGraph` (`memory/system_memory.py`) è un grafo di conoscenza che persiste su disco tra tutti gli episodi. Non contiene log grezzi di eventi, ma pattern distillati: relazioni quantificate tra entità di mercato (SKU, stagioni, manufacturer, categorie), ciascuna con confidenza e conteggio delle evidenze accumulate nel tempo. È il patrimonio cognitivo del sistema — cresce episodio dopo episodio. Qui la scelta è opposta rispetto alla breve termine: il grafo è condiviso tra tutti gli agenti. La ragione è contestuale. Nella GDO reale, i pattern di mercato aggregati — stagionalità, lift promozionale per categoria, elasticità al prezzo — sono spesso commercialmente disponibili tramite provider come Nielsen o IRI, accessibili a tutti gli attori. Non sono segreti: sono la conoscenza di sfondo su cui tutti ragionano. Le strategie individuali restano proprietarie; le leggi del mercato no. Il grafo modella esattamente questa distinzione: ogni agente vi deposita osservazioni pubblicamente osservabili, non le proprie tattiche.
+**Memoria a lungo termine, condivisa, cross-episodio.** Il `MarketMemoryGraph` (`memory/system_memory.py`) è un grafo di conoscenza che persiste su disco tra tutti gli episodi. Non contiene log grezzi di eventi, ma pattern distillati: relazioni quantificate tra entità di mercato (SKU, stagioni, manufacturer, categorie), ciascuna con confidenza e conteggio delle evidenze accumulate nel tempo. È il patrimonio cognitivo del sistema, cresce episodio dopo episodio. Qui la scelta è opposta rispetto alla breve termine: il grafo è condiviso tra tutti gli agenti. La ragione è contestuale. Nella GDO reale, i pattern di mercato aggregati, stagionalità, lift promozionale per categoria, elasticità al prezzo, sono spesso commercialmente disponibili tramite provider come Nielsen o IRI, accessibili a tutti gli attori. Non sono segreti: sono la conoscenza di sfondo su cui tutti ragionano. Le strategie individuali restano proprietarie; le leggi del mercato no. Il grafo modella esattamente questa distinzione: ogni agente vi deposita osservazioni pubblicamente osservabili, non le proprie tattiche.
 
 A collegare le due: il `MemoryExtractor` (`memory/agent_memory.py`), che a fine episodio analizza i risultati settimanali e le decisioni degli agenti, e deposita nuove osservazioni nel grafo a lungo termine. È il bridge tra ciò che è successo nell'episodio e la conoscenza che persiste.
 
@@ -204,7 +204,7 @@ Ogni osservazione nasce nel Layer 2. Se viene confermata con confidenza ≥ 75% 
 Promozione Layer 2 → Layer 1:  evidence_count ≥ 5  AND  confidence ≥ 0.75
 ```
 
-Nei primi episodi gli agenti operano quasi al buio: la breve termine cattura solo le ultime mosse, la lunga è ancora vuota. Dopo 5–10 episodi iniziano a comparire leggi strutturali: lift promozionale per SKU, stagionalità confermata, pattern comportamentali dei competitor. Gli agenti leggono entrambe le memorie ogni settimana — e le loro decisioni cambiano di conseguenza. È questo accumulo che trasforma una sequenza di negoziazioni isolate in qualcosa che assomiglia all'apprendimento.
+Nei primi episodi gli agenti operano quasi al buio: la breve termine cattura solo le ultime mosse, la lunga è ancora vuota. Dopo 5–10 episodi iniziano a comparire leggi strutturali: lift promozionale per SKU, stagionalità confermata, pattern comportamentali dei competitor. Gli agenti leggono entrambe le memorie ogni settimana, e le loro decisioni cambiano di conseguenza. È questo accumulo che trasforma una sequenza di negoziazioni isolate in qualcosa che assomiglia all'apprendimento.
 
 La scelta di un grafo unico condiviso è consapevolmente semplificativa: in un sistema orientato alla competizione pura, si avrebbe un grafo per agente, con osservazioni filtrate per prospettiva. Quella direzione è percorribile nell'architettura attuale e rappresenta un'estensione naturale per simulazioni più adversariali.
 
@@ -212,7 +212,7 @@ La scelta di un grafo unico condiviso è consapevolmente semplificativa: in un s
 
 ## Modello di mercato
 
-Il comportamento di mercato è modellato dalla classe `MarketSimulator` (`world/market_simulator.py`), che gestisce 8 SKU in 3 sottocategorie (chips, crackers, healthy) e calcola, settimana per settimana, domanda, ricavi e margini per ogni attore. È il layer di realtà su cui gli agenti esercitano le proprie decisioni — e la fonte dei dati che il `MemoryExtractor` distilla nel grafo a lungo termine.
+Il comportamento di mercato è modellato dalla classe `MarketSimulator` (`world/market_simulator.py`), che gestisce 8 SKU in 3 sottocategorie (chips, crackers, healthy) e calcola, settimana per settimana, domanda, ricavi e margini per ogni attore. È il layer di realtà su cui gli agenti esercitano le proprie decisioni, e la fonte dei dati che il `MemoryExtractor` distilla nel grafo a lungo termine.
 
 ### Domanda moltiplicativa
 
@@ -224,9 +224,9 @@ unità = domanda_base × stagionalità × trend_consumer × lift_promozionale ×
 
 **Domanda base** — la vendita attesa in condizioni neutrali, specifica per SKU. Riflette il posizionamento: il mass market (ChipsMass) parte da 200 unità/settimana, il premium (ChipsPremium) da 120, i prodotti healthy da 60–70. La private label del retailer si colloca a 180.
 
-**Stagionalità** — un array di 52 moltiplicatori settimanali, costruito una volta sola in `_build_seasonality()` e applicato deterministicamente a tutti gli SKU. Riflette i picchi reali della GDO italiana: +25% estate (settimane 24–35), +35% Natale (settimane 48–52), +20% a cavallo d'anno, −20% nelle settimane 3–6 (calo post-feste). La stagionalità è uguale per tutti gli SKU — è la struttura del calendario, non una caratteristica di prodotto.
+**Stagionalità** — un array di 52 moltiplicatori settimanali, costruito una volta sola in `_build_seasonality()` e applicato deterministicamente a tutti gli SKU. Riflette i picchi reali della GDO italiana: +25% estate (settimane 24–35), +35% Natale (settimane 48–52), +20% a cavallo d'anno, −20% nelle settimane 3–6 (calo post-feste). La stagionalità è uguale per tutti gli SKU, è la struttura del calendario, non una caratteristica di prodotto.
 
-**Trend consumer** — due parametri continui in [-1.0, +1.0] aggiornati ogni settimana dall'agente Consumer: `healthy_preference` e `price_sensitivity`. La preferenza healthy amplifica o smorza la domanda degli SKU in sottocategoria healthy (fino a ±30%). La sensibilità al prezzo riduce la domanda complessiva quando alta (fino a −10%) — modellando il fenomeno per cui i consumatori molto attenti al prezzo rinviano gli acquisti in assenza di promozioni.
+**Trend consumer** — due parametri continui in [-1.0, +1.0] aggiornati ogni settimana dall'agente Consumer: `healthy_preference` e `price_sensitivity`. La preferenza healthy amplifica o smorza la domanda degli SKU in sottocategoria healthy (fino a ±30%). La sensibilità al prezzo riduce la domanda complessiva quando alta (fino a −10%), modellando il fenomeno per cui i consumatori molto attenti al prezzo rinviano gli acquisti in assenza di promozioni.
 
 **Lift promozionale** — quando una promozione è attiva, la domanda sale. Il lift base è ×1.8, incrementato proporzionalmente allo sconto applicato. Se il manufacturer ha pagato una display fee superiore a 400€, si aggiunge un ulteriore +0.3× per il posizionamento premium in scaffale. Il lift è cappato a ×3.0 per evitare effetti irrealistici. Con uno sconto del 25% e display fee 500€, il lift tipico è intorno a ×2.3.
 
@@ -249,13 +249,13 @@ Ogni SKU ha tre prezzi: costo di produzione, prezzo di listino manufacturer→re
 | RiceCakes Bio 100g | mfr_c | healthy | 70 | €0.90 | €1.80 | €2.90 |
 | PrivateLabel Chips | retailer | chips | 180 | €0.40 | — | €1.20 |
 
-La private label è sempre listata e non soggetta a negoziazione. Il suo costo di produzione coincide con il transfer price (il retailer produce e distribuisce direttamente), quindi il margine è interamente la differenza tra prezzo al consumatore e costo. Non è un agente ma un benchmark di pressione competitiva perenne sulla sottocategoria chips — la sua presenza costringe i manufacturer a giustificare il differenziale di prezzo con qualità percepita o promozioni.
+La private label è sempre listata e non soggetta a negoziazione. Il suo costo di produzione coincide con il transfer price (il retailer produce e distribuisce direttamente), quindi il margine è interamente la differenza tra prezzo al consumatore e costo. Non è un agente ma un benchmark di pressione competitiva perenne sulla sottocategoria chips, la sua presenza costringe i manufacturer a giustificare il differenziale di prezzo con qualità percepita o promozioni.
 
 ### Reward e incentivi
 
 A fine episodio, `compute_rewards()` calcola il reward per ogni agente a partire dai KPI accumulati. Per i manufacturer: combinazione di revenue normalizzata (40%), margine normalizzato (30%) e ROI promozionale (30%). Per il retailer: margine di categoria (40%), volume totale (30%), rotazione dell'inventario (30%).
 
-Il reward finale è un **blend 60% individuale / 40% sistemico**: il KPI individuale viene mescolato con la media dei reward di tutti gli agenti. Questa scelta modella la dinamica di partnership tipica della GDO — in cui manufacturer e retailer hanno interesse alla salute dell'intera categoria, non solo alla propria quota — e impedisce che il sistema converga su strategie puramente avversariali dove un agente massimizza erodendo il valore degli altri.
+Il reward finale è un **blend 60% individuale / 40% sistemico**: il KPI individuale viene mescolato con la media dei reward di tutti gli agenti. Questa scelta modella la dinamica di partnership tipica della GDO, in cui manufacturer e retailer hanno interesse alla salute dell'intera categoria, non solo alla propria quota, e impedisce che il sistema converga su strategie puramente avversariali dove un agente massimizza erodendo il valore degli altri.
 
 ---
 
@@ -350,18 +350,18 @@ Ogni settimana richiede 5 chiamate LLM. Con modelli locali su hardware consumer,
 
 ## Possibili nuovi sviluppi
 
-**Strategy journal per agente.** Attualmente ogni agente mantiene uno storico delle proprie decisioni settimanali, ma non sintetizza insight di lungo periodo. Un journal persistente — alimentato dall'LLM a fine episodio — permetterebbe a ciascun agente di ragionare su pattern multi-episodio: *"nelle ultime 5 stagioni estive, le promozioni su ChipsPremium hanno generato ROI superiore alla media"*. Trasformerebbe la memoria da log a vera intelligenza strategica.
+**Strategy journal per agente.** Attualmente ogni agente mantiene uno storico delle proprie decisioni settimanali, ma non sintetizza insight di lungo periodo. Un journal persistente, alimentato dall'LLM a fine episodio, permetterebbe a ciascun agente di ragionare su pattern multi-episodio: *"nelle ultime 5 stagioni estive, le promozioni su ChipsPremium hanno generato ROI superiore alla media"*. Trasformerebbe la memoria da log a vera intelligenza strategica.
 
 **Negoziazione multi-round.** Il protocollo attuale prevede un singolo ciclo proposta–risposta per settimana. La negoziazione reale in GDO è molto più articolata: joint business plan annuali, accordi quadro su più SKU, rinegoziazione delle condizioni al raggiungimento di target di volume. Estendere il protocollo a più round esporrebbe dinamiche di potere negoziale che il modello attuale non cattura.
 
-**Topologia multi-retailer.** Con un solo retailer, i manufacturer non affrontano il problema reale dell'allocazione del budget promozionale tra catene diverse. Aggiungere più retailer in competizione — con profili di consumatori e politiche di categoria distinti — introdurrebbe scelte di portafoglio realistiche e tensioni tra canali.
+**Topologia multi-retailer.** Con un solo retailer, i manufacturer non affrontano il problema reale dell'allocazione del budget promozionale tra catene diverse. Aggiungere più retailer in competizione, con profili di consumatori e politiche di categoria distinti, introdurrebbe scelte di portafoglio realistiche e tensioni tra canali.
 
 **Meccaniche di supply chain.** Le promozioni generano picchi di domanda che devono essere anticipati nella pianificazione produttiva e logistica. Lead time, rischio di stockout e costi di safety stock sono vincoli concreti che oggi il simulatore ignora. Integrarli renderebbe le decisioni promozionali dei manufacturer strutturalmente più fedeli alla realtà operativa.
 
-**Shock macroeconomici.** L'inflazione erode il valore reale degli sconti e altera la sensibilità al prezzo dei consumatori. Le disruption dell'offerta cambiano i rapporti di forza tra manufacturer e retailer. Introdurre questi shock permetterebbe di testare la robustezza della conoscenza accumulata dal sistema in presenza di distribution shift — un banco di prova per la qualità del grafo di memoria.
+**Shock macroeconomici.** L'inflazione erode il valore reale degli sconti e altera la sensibilità al prezzo dei consumatori. Le disruption dell'offerta cambiano i rapporti di forza tra manufacturer e retailer. Introdurre questi shock permetterebbe di testare la robustezza della conoscenza accumulata dal sistema in presenza di distribution shift, un banco di prova per la qualità del grafo di memoria.
 
 **Loop RL con valutazione statistica delle policy.** Il sistema attuale usa ragionamento LLM senza ottimizzazione formale delle policy. Un loop di reinforcement learning con experience replay consentirebbe di separare la conoscenza strutturale appresa dal comportamento degli agenti, valutare statisticamente l'efficacia delle strategie promozionali, e confrontare policy alternative in modo rigoroso.
 
 ---
 
-*Costruito come esplorazione di sistemi genuinamente agentici in contesti enterprise — dove più attori con incentivi concorrenti prendono decisioni sequenziali in condizioni di incertezza, e l'intelligenza si accumula nel tempo.*
+*Costruito come esplorazione di sistemi genuinamente agentici in contesti enterprise, dove più attori con incentivi concorrenti prendono decisioni sequenziali in condizioni di incertezza, e l'intelligenza si accumula nel tempo.*
